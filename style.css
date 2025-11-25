@@ -561,15 +561,21 @@ h1 {
     }
 }
 
-/* CONTRÔLES (AUDIO + ADMIN) */
+/* CONTRÔLES (AUDIO) */
 .controls-container {
     position: fixed;
     bottom: 20px;
     right: 20px;
     z-index: 150;
-    display: flex;
-    gap: 15px; /* Espace entre les boutons */
-    flex-direction: row;
+}
+
+/* Bouton Admin (Gauche) */
+.admin-pos-left {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    z-index: 150;
+    opacity: 0.3; /* Très discret */
 }
 
 .control-btn {
@@ -619,9 +625,6 @@ h1 {
 }
 
 /* Bouton Admin spécifique */
-#admin-toggle {
-    opacity: 0.5; /* Plus discret par défaut */
-}
 #admin-toggle:hover {
     opacity: 1;
 }
