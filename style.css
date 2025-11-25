@@ -1,0 +1,745 @@
+:root {
+    /* Palette Sophistiquée & Liquid Glass */
+    --deep-green: #0A2F1F;
+    --rich-red: #720e1e;
+    --gold-accent: #D4AF37;
+    --cream: #FFF8E7;
+    --night-blue: #0F172A;
+    
+    /* Glassmorphism Vars */
+    --glass-bg: rgba(255, 255, 255, 0.15);
+    --glass-border: rgba(255, 255, 255, 0.2);
+    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    
+    --text-primary: #FFF8E7;
+    --text-secondary: rgba(255, 248, 231, 0.9);
+    
+    /* Fonts Updated */
+    --font-heading: 'Mountains of Christmas', cursive;
+    --font-body: 'Quicksand', sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    /* Fond Sapin Abstrait / Forêt */
+    background-color: var(--deep-green);
+    background-image: 
+        linear-gradient(to bottom, rgba(10, 47, 31, 0.8), rgba(5, 25, 16, 0.9)),
+        url('https://images.unsplash.com/photo-1576919228236-a097c32a5cd4?q=80&w=2500&auto=format&fit=crop'); /* Image sapin haute qualité libre de droit */
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    min-height: 100vh;
+    overflow-x: hidden;
+    padding: 40px 20px 150px 20px; /* Padding bas pour le footer */
+    
+    /* Curseur Traineau Père Noël */
+    cursor: url('https://cur.cursors-4u.net/holidays/hol-4/hol386.cur'), auto; 
+}
+
+/* Surcharge du curseur pour les éléments cliquables */
+a, button, .door, .close-btn, .music-btn, .enter-btn {
+    cursor: url('https://cur.cursors-4u.net/holidays/hol-4/hol386.cur'), pointer;
+}
+
+/* TRAINEE MAGIQUE CURSEUR */
+.magic-particle {
+    position: fixed;
+    pointer-events: none;
+    width: 6px;
+    height: 6px;
+    background: radial-gradient(circle, #fff, var(--gold-accent));
+    border-radius: 50%;
+    box-shadow: 0 0 8px var(--gold-accent);
+    animation: sparkleOut 0.8s forwards;
+    z-index: 9999;
+}
+
+@keyframes sparkleOut {
+    0% { opacity: 1; transform: scale(1); }
+    100% { opacity: 0; transform: scale(0) translateY(15px); }
+}
+
+/* Arrière-plan animé subtil (paillettes) */
+.bg-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MCIgaGVpZ2h0PSI1MCIgb3BhY2l0eT0iMC4wNSI+CjxjaXJjbGUgY3g9IjI1IiBjeT0iMjUiIHI9IjEiIGZpbGw9IiNmZmYiIC8+Cjwvc3ZnPg==');
+    opacity: 0.3;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.main-container {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 60px;
+    position: relative;
+    /* Petit effet glass sur le header */
+    background: rgba(10, 47, 31, 0.4);
+    backdrop-filter: blur(4px);
+    padding: 20px;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.1);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+h1 {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 4.5rem; /* Un peu plus grand pour cette font */
+    color: var(--gold-accent);
+    text-shadow: 0 2px 15px rgba(0,0,0,0.5);
+    letter-spacing: 2px;
+    margin: 10px 0;
+    line-height: 1.2;
+}
+
+.subtitle {
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.header-ornament {
+    font-size: 2rem;
+    color: var(--gold-accent);
+    opacity: 0.8;
+}
+
+/* Grille */
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 25px;
+    padding: 20px;
+}
+
+/* Design des portes - LIQUID GLASS */
+.door {
+    /* Effet Liquid Glass */
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px); /* Safari */
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    aspect-ratio: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    box-shadow: var(--glass-shadow);
+    overflow: hidden;
+}
+
+/* Reflet brillant (glare) */
+.door::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -50%;
+    width: 100%; height: 100%;
+    background: linear-gradient(to right, transparent, rgba(255,255,255,0.2), transparent);
+    transform: skewX(-25deg);
+    transition: 0.5s;
+    pointer-events: none;
+}
+
+/* Interaction: Hover uniquement sur desktop */
+@media (hover: hover) {
+    .door:hover {
+        transform: translateY(-8px) scale(1.02);
+        background: rgba(255, 255, 255, 0.25);
+        border-color: var(--gold-accent);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+    }
+    
+    .door:hover::before {
+        left: 100%;
+    }
+    
+    .door:hover .day-number {
+        text-shadow: 0 0 20px var(--gold-accent);
+    }
+}
+
+.door:active {
+    transform: scale(0.95);
+}
+
+.door.opened {
+    background: rgba(10, 47, 31, 0.85);
+    border: 2px solid var(--gold-accent);
+    box-shadow: inset 0 0 30px rgba(0,0,0,0.7);
+    transform: none;
+}
+
+.door.opened .day-number {
+    color: var(--gold-accent);
+    opacity: 0.4;
+    transform: scale(0.8);
+}
+
+.door.opened .ribbon {
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+/* Numéro du jour */
+.day-number {
+    font-family: var(--font-heading);
+    font-size: 3.5rem;
+    font-weight: 700;
+    color: var(--cream);
+    z-index: 2;
+    text-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    transition: all 0.3s ease;
+}
+
+/* Ruban élégant et subtil */
+.ribbon {
+    position: absolute;
+    background: rgba(212, 175, 55, 0.6);
+    z-index: 1;
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+}
+
+.ribbon-v {
+    width: 100%; height: 1px; top: 15%;
+    background: linear-gradient(90deg, transparent, var(--gold-accent), transparent);
+}
+.ribbon-h {
+    width: 1px; height: 100%; left: 50%;
+    background: linear-gradient(180deg, transparent, var(--gold-accent), transparent);
+}
+
+/* État verrouillé */
+.door.locked {
+    /* Plus discret sur le glass */
+    opacity: 0.8;
+}
+
+/* Modal LIQUID GLASS */
+.modal {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    z-index: 100;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+}
+
+.modal.visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+}
+
+.modal-content {
+    position: relative;
+    /* Style Glassmorphism */
+    background: rgba(25, 35, 45, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    padding: 40px;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+    
+    width: 90%;
+    max-width: 900px;
+    max-height: 90vh;
+    overflow-y: auto;
+    text-align: center;
+    transform: translateY(30px) scale(0.95);
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    color: var(--text-primary);
+}
+
+.modal.visible .modal-content {
+    transform: translateY(0) scale(1);
+}
+
+.modal-header {
+    margin-bottom: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
+#modal-date {
+    font-family: var(--font-heading);
+    font-size: 3rem;
+    color: var(--gold-accent);
+    font-weight: 700;
+    border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+    padding-bottom: 10px;
+    text-shadow: 0 2px 10px rgba(212, 175, 55, 0.3);
+}
+
+.ornament-left, .ornament-right {
+    font-size: 1.5rem;
+    color: var(--gold-accent);
+}
+
+#modal-media-container img, 
+#modal-media-container video {
+    max-width: 100%;
+    max-height: 65vh;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.1);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+    display: block;
+    margin: 0 auto;
+}
+
+.caption-container {
+    margin-top: 25px;
+    font-family: var(--font-body);
+    font-style: normal;
+    font-weight: 400;
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+}
+
+.close-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 50%;
+    width: 40px; height: 40px;
+    display: flex; align-items: center; justify-content: center;
+    border: 1px solid rgba(255,255,255,0.1);
+    color: var(--text-secondary);
+    transition: all 0.3s;
+    padding: 0;
+    z-index: 10;
+}
+
+.close-btn:hover {
+    background: var(--gold-accent);
+    color: var(--deep-green);
+    transform: rotate(90deg);
+}
+
+/* Flocons */
+.snow-container {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.snowflake {
+    position: absolute;
+    width: 4px; height: 4px;
+    background: white;
+    border-radius: 50%;
+    opacity: 0.7;
+    animation: fall linear infinite;
+    filter: drop-shadow(0 0 5px white);
+}
+
+@keyframes fall {
+    to { transform: translateY(100vh); }
+}
+
+/* TOAST */
+.toast {
+    position: fixed;
+    bottom: 50%;
+    left: 50%;
+    transform: translate(-50%, 50%) scale(0.8);
+    background: rgba(10, 47, 31, 0.95); /* Fond plus sombre pour lisibilité */
+    backdrop-filter: blur(15px);
+    border: 1px solid var(--gold-accent);
+    color: var(--cream);
+    padding: 30px 40px; /* Plus d'espace */
+    border-radius: 12px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+    z-index: 200;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 1.2rem;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    text-align: center;
+    min-width: 300px;
+}
+
+.toast.visible {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.toast-icon {
+    font-size: 2.5rem;
+    filter: drop-shadow(0 0 10px var(--gold-accent));
+}
+
+.toast-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 1.5rem;
+    cursor: pointer;
+    line-height: 1;
+    padding: 5px;
+}
+
+.toast-close:hover {
+    color: var(--gold-accent);
+}
+
+.toast-countdown {
+    font-size: 0.9rem;
+    color: var(--gold-accent);
+    font-weight: normal;
+    margin-top: 10px;
+}
+
+/* DÉCORATION BORDURES (Stickers) */
+.border-decorations {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none; /* Important : laisse passer les clics */
+    z-index: 10;
+}
+
+.deco-sticker {
+    position: absolute;
+    opacity: 0.56; /* Plus transparent et subtil */
+    filter: drop-shadow(0 5px 15px rgba(0,0,0,0.3));
+    transition: all 0.5s ease;
+}
+
+/* Animation douce au survol de la zone (si souris passe dessus) */
+.deco-sticker:hover {
+    transform: scale(1.05);
+    opacity: 0.9;
+    filter: drop-shadow(0 8px 20px rgba(0,0,0,0.5));
+}
+
+/* Positions Spécifiques */
+.top-left {
+    top: -30px;
+    left: -30px;
+    max-width: 200px;
+    transform: rotate(-15deg);
+}
+
+.top-right {
+    top: -20px;
+    right: -20px;
+    max-width: 180px;
+    transform: rotate(10deg);
+}
+
+.side-left {
+    top: 50%;
+    left: -40px;
+    max-width: 150px;
+    transform: translateY(-50%) rotate(-5deg);
+}
+
+.side-right {
+    top: 50%;
+    right: -40px;
+    max-width: 160px;
+    transform: translateY(-50%) rotate(5deg);
+}
+
+.bottom-left {
+    bottom: -20px;
+    left: -10px;
+    max-width: 220px;
+    transform: rotate(5deg);
+}
+
+.bottom-right {
+    bottom: -30px;
+    right: -10px;
+    max-width: 200px;
+    transform: rotate(-10deg);
+}
+
+.bottom-center {
+    bottom: -50px;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: 280px;
+    z-index: 11;
+}
+
+/* ANIMATION TRAINEAU DU PÈRE NOËL */
+.santa-sleigh-container {
+    position: fixed;
+    top: 15%; /* Hauteur du ciel */
+    left: -300px; /* Départ hors écran */
+    z-index: 5;
+    pointer-events: none;
+    opacity: 0.8;
+    /* Animation : traverse l'écran en 45s, infini */
+    animation: sleighRide 45s linear infinite;
+}
+
+.santa-sleigh {
+    width: 200px;
+    height: auto;
+    filter: drop-shadow(0 10px 10px rgba(0,0,0,0.3));
+    transform: rotate(-5deg);
+}
+
+@keyframes sleighRide {
+    0% {
+        left: -300px;
+        top: 15%;
+        transform: scale(0.8) rotate(-5deg);
+    }
+    40% {
+        top: 10%; /* Petite vague */
+    }
+    60% {
+        top: 20%;
+    }
+    100% {
+        left: 100vw; /* Fin hors écran droite */
+        top: 15%;
+        transform: scale(0.8) rotate(-5deg);
+    }
+}
+
+/* LECTEUR AUDIO DISCRET */
+.audio-player {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 100;
+}
+
+.music-btn {
+    background: rgba(10, 47, 31, 0.6);
+    backdrop-filter: blur(5px);
+    border: 1px solid var(--gold-accent);
+    color: var(--gold-accent);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 15px rgba(0,0,0,0.3);
+}
+
+.music-btn:hover {
+    transform: scale(1.1);
+    background: rgba(212, 175, 55, 0.2);
+    box-shadow: 0 0 20px var(--gold-accent);
+}
+
+.music-icon {
+    font-size: 1.5rem;
+    animation: pulseMusic 2s infinite;
+}
+
+.music-btn.paused .music-icon {
+    animation: none;
+    opacity: 0.6;
+}
+
+.music-btn.paused::after {
+    content: '';
+    position: absolute;
+    width: 60%;
+    height: 2px;
+    background: var(--gold-accent);
+    transform: rotate(45deg);
+}
+
+@keyframes pulseMusic {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+/* OVERLAY DE BIENVENUE (HACK AUDIO) */
+#welcome-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(5, 15, 10, 0.95);
+    backdrop-filter: blur(10px);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    color: var(--cream);
+    text-align: center;
+    padding: 20px;
+    transition: opacity 0.8s ease;
+}
+
+#welcome-overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.welcome-content {
+    max-width: 500px;
+    animation: float 3s ease-in-out infinite;
+}
+
+.welcome-title {
+    font-family: var(--font-heading);
+    font-size: 3.5rem;
+    color: var(--gold-accent);
+    margin-bottom: 20px;
+    text-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+}
+
+.enter-btn {
+    background: transparent;
+    border: 2px solid var(--gold-accent);
+    color: var(--gold-accent);
+    padding: 15px 40px;
+    font-family: var(--font-body);
+    font-size: 1.2rem;
+    font-weight: bold;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-top: 30px;
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+}
+
+.enter-btn:hover {
+    background: var(--gold-accent);
+    color: var(--deep-green);
+    box-shadow: 0 0 30px rgba(212, 175, 55, 0.6);
+    transform: translateY(-3px);
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+/* Ajustements Responsive pour les Stickers */
+@media (max-width: 1200px) {
+    .deco-sticker { max-width: 120px; }
+    .bottom-center { max-width: 180px; }
+}
+
+@media (max-width: 768px) {
+    body { 
+        padding: 20px 10px 160px 10px; /* Plus d'espace en bas pour ne pas cacher les cases */
+        overflow-x: hidden; /* Bloque le scroll horizontal */
+    }
+    h1 { font-size: 3.5rem; }
+    .calendar-grid { 
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); 
+        gap: 12px; 
+        padding-bottom: 20px;
+    }
+    
+    /* Stickers latéraux sur mobile : réduits et repositionnés */
+    .side-left { 
+        display: block; 
+        max-width: 60px; 
+        left: -10px; 
+        top: 40%; 
+    }
+    .side-right { 
+        display: block; 
+        max-width: 60px; 
+        right: -10px; 
+        top: 40%; 
+    }
+    
+    .top-left { max-width: 100px; left: -20px; top: -10px; }
+    .top-right { max-width: 100px; right: -20px; top: -10px; }
+    .bottom-left { max-width: 100px; bottom: -10px; left: -20px; }
+    .bottom-right { max-width: 100px; bottom: -10px; right: -20px; }
+    .bottom-center { max-width: 140px; bottom: -20px; }
+    
+    .santa-sleigh { width: 120px; } /* Plus petit sur mobile */
+    
+    /* Lecteur Audio Mobile : plus gros pour les doigts, et bien placé */
+    .audio-player {
+        bottom: 20px;
+        right: 20px;
+        z-index: 150; /* Au dessus de tout */
+    }
+    .music-btn {
+        width: 55px; /* Zone de touche confort */
+        height: 55px;
+        background: rgba(10, 47, 31, 0.85); /* Plus opaque sur mobile */
+    }
+    .music-icon {
+        font-size: 1.5rem;
+    }
+    
+    /* Modal Mobile optimisée */
+    .modal-content {
+        width: 95%;
+        padding: 25px 15px;
+        margin: 0 auto;
+    }
+    .close-btn {
+        width: 45px; height: 45px; /* Plus facile à fermer */
+        top: 10px; right: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    h1 { font-size: 2.5rem; }
+    .calendar-grid { 
+        grid-template-columns: repeat(3, 1fr); 
+        gap: 10px; 
+    }
+    .sticker-footer { padding: 0 10px; }
+    .sticker { max-height: 80px; }
+    .sticker-center { max-height: 110px; }
+}
