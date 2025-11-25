@@ -40,13 +40,13 @@ body {
     overflow-x: hidden;
     padding: 40px 20px 150px 20px; /* Padding bas pour le footer */
     
-    /* Curseur Traineau Père Noël */
-    cursor: url('https://cur.cursors-4u.net/holidays/hol-4/hol386.cur'), auto; 
+    /* Curseur Traineau (Emoji encodé SVG) */
+    cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewport='0 0 100 100' style='fill:black;font-size:24px;'><text y='50%' x='50%' font-size='30'>🛷</text></svg>") 16 16, auto;
 }
 
 /* Surcharge du curseur pour les éléments cliquables */
 a, button, .door, .close-btn, .music-btn, .enter-btn {
-    cursor: url('https://cur.cursors-4u.net/holidays/hol-4/hol386.cur'), pointer;
+    cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewport='0 0 100 100' style='fill:black;font-size:24px;'><text y='50%' x='50%' font-size='30'>🛷</text></svg>") 16 16, pointer;
 }
 
 /* TRAINEE MAGIQUE CURSEUR */
@@ -116,6 +116,20 @@ h1 {
     color: var(--text-secondary);
     letter-spacing: 1px;
     text-transform: uppercase;
+}
+
+/* COMPTE A REBOURS GLOBAL */
+.global-countdown {
+    font-family: var(--font-heading);
+    font-size: 2rem;
+    color: var(--cream);
+    margin: 15px 0;
+    text-shadow: 0 0 10px var(--gold-accent);
+    background: rgba(10, 47, 31, 0.6);
+    display: inline-block;
+    padding: 10px 30px;
+    border-radius: 50px;
+    border: 1px solid rgba(212, 175, 55, 0.3);
 }
 
 .header-ornament {
@@ -682,6 +696,11 @@ h1 {
         grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); 
         gap: 12px; 
         padding-bottom: 20px;
+    }
+    
+    .global-countdown {
+        font-size: 1.5rem;
+        padding: 8px 20px;
     }
     
     /* Stickers latéraux sur mobile : réduits et repositionnés */

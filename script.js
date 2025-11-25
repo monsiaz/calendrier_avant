@@ -23,12 +23,11 @@ const calendarData = (typeof GENERATED_CALENDAR_DATA !== 'undefined')
 // Sauvegarde l'état des cases ouvertes
 let openedDoors = JSON.parse(localStorage.getItem('adventCalendarOpened')) || [];
 
-// NETTOYAGE DE SÉCURITÉ : Si on n'est pas en mode DEV, on vérifie que les cases ouvertes
-// sont bien autorisées à la date d'aujourd'hui. Sinon, on les referme.
+// NETTOYAGE DE SÉCURITÉ
 if (!DEV_MODE) {
     const validOpenedDoors = openedDoors.filter(day => isDateAllowed(day));
     if (validOpenedDoors.length !== openedDoors.length) {
-        console.log("Correction des données : fermeture des cases ouvertes par erreur (test).");
+        console.log("Correction des données : fermeture des cases ouvertes par erreur.");
         openedDoors = validOpenedDoors;
         localStorage.setItem('adventCalendarOpened', JSON.stringify(openedDoors));
     }
@@ -42,12 +41,10 @@ function initCalendar() {
         door.classList.add('door');
         door.dataset.day = data.day;
 
-        // Vérifie si la case a déjà été ouverte
         if (openedDoors.includes(data.day)) {
             door.classList.add('opened');
         }
 
-        // Contenu de la porte
         const content = `
             <div class="ribbon ribbon-v"></div>
             <div class="ribbon ribbon-h"></div>
@@ -55,10 +52,8 @@ function initCalendar() {
         `;
         door.innerHTML = content;
 
-        // Gestion du clic
         door.addEventListener('click', () => handleDoorClick(door, data));
 
-        // Vérifie si la case est verrouillée (pour le style)
         if (!isDateAllowed(data.day) && !openedDoors.includes(data.day)) {
             door.classList.add('locked');
             door.title = "Patience ! Ce n'est pas encore le moment...";
@@ -75,49 +70,65 @@ function isDateAllowed(day) {
     const currentMonth = now.getMonth(); // 0 = Janvier, 11 = Décembre
     const currentDay = now.getDate();
 
-    // Autoriser si on est en Décembre et que le jour est atteint
-    // OU si on est après Décembre (ex: Janvier de l'année suivante)
     if (currentMonth === 11) {
         return currentDay >= day;
     } else if (currentMonth < 11 && now.getFullYear() > 2025) { 
-        // Année suivante (juste une sécurité simple)
         return true;
     }
     
-    // Si on est avant décembre (ex: Novembre), tout est verrouillé
     return false;
+}
+
+// CALCUL TEMPS ATTENTE
+function getWaitTimeMessage(targetDay) {
+    const now = new Date();
+    // Cible : Décembre de l'année en cours
+    const targetDate = new Date(now.getFullYear(), 11, targetDay, 0, 0, 0);
+    
+    // Si on est avant décembre, la cible est le jour J en décembre
+    // Si on est déjà en décembre mais avant le jour, la cible est correcte
+    // Si on est après, ça n'arrivera pas car la case serait ouverte
+    
+    let diff = targetDate - now;
+    
+    if (diff <= 0) return "C'est le moment !";
+
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+
+    let parts = [];
+    if (days > 0) parts.push(`${days}j`);
+    if (hours > 0) parts.push(`${hours}h`);
+    parts.push(`${minutes}m`);
+
+    return `Disponible dans : ${parts.join(' ')}`;
 }
 
 function handleDoorClick(doorElement, data) {
     if (doorElement.classList.contains('opened')) {
-        // Si déjà ouvert, on ré-ouvre juste le modal sans animation de porte
         openModal(data);
         return;
     }
 
     if (!isDateAllowed(data.day)) {
-        // Animation de refus
         doorElement.classList.add('locked');
-        // Le CSS gère l'animation shake via la classe :hover ou active, 
-        // mais on peut forcer un reflow si besoin. 
-        // Ici, l'utilisateur verra le curseur "not-allowed" et l'animation CSS au survol.
-        showToast(`Patience ! Tu ne peux pas encore ouvrir la case du ${data.day} décembre.`);
+        const waitTime = getWaitTimeMessage(data.day);
+        showToast(`Patience ! ${waitTime}`);
         return;
     }
 
-    // Ouvre la porte
     doorElement.classList.add('opened');
     
-    // Sauvegarde
     if (!openedDoors.includes(data.day)) {
         openedDoors.push(data.day);
         localStorage.setItem('adventCalendarOpened', JSON.stringify(openedDoors));
     }
 
-    // Affiche le modal
-    setTimeout(() => openModal(data), 300); // Petit délai pour l'animation
+    setTimeout(() => openModal(data), 300);
 }
 
+// GESTION TOAST AVEC COMPTE A REBOURS FERMETURE
 let toastTimeout;
 let countdownInterval;
 
@@ -128,7 +139,6 @@ function showToast(message) {
     const toastClose = document.getElementById('toast-close');
     
     if (toast && toastMessage) {
-        // Reset précédent
         if (toastTimeout) clearTimeout(toastTimeout);
         if (countdownInterval) clearInterval(countdownInterval);
         
@@ -136,7 +146,6 @@ function showToast(message) {
         toast.classList.remove('hidden');
         toast.classList.add('visible');
         
-        // Compte à rebours visuel
         let secondsLeft = 4;
         toastCountdown.textContent = `Fermeture dans ${secondsLeft}s`;
         
@@ -150,17 +159,13 @@ function showToast(message) {
             }
         }, 1000);
 
-        // Fonction de fermeture
         const hideToast = () => {
             toast.classList.remove('visible');
             setTimeout(() => toast.classList.add('hidden'), 500);
             if (countdownInterval) clearInterval(countdownInterval);
         };
 
-        // Fermeture manuelle
         toastClose.onclick = hideToast;
-        
-        // Fermeture automatique après 4 secondes
         toastTimeout = setTimeout(hideToast, 4000);
     }
 }
@@ -190,36 +195,49 @@ function openModal(data) {
 function closeModal() {
     modal.classList.remove('visible');
     modal.classList.add('hidden');
-    // Arrête la vidéo si elle joue
     const video = modalMediaContainer.querySelector('video');
     if (video) {
         video.pause();
     }
 }
 
-// Fermeture du modal
 closeBtn.addEventListener('click', closeModal);
 modal.addEventListener('click', (e) => {
     if (e.target === modal) closeModal();
 });
 
-// Génération des flocons en JS pour plus de contrôle
-function createSnowflakes() {
-    const container = document.querySelector('.snow-container');
-    const snowflakeCount = 50;
+// COMPTE A REBOURS GLOBAL (Noël)
+function updateGlobalCountdown() {
+    const countdownEl = document.getElementById('global-countdown');
+    if (!countdownEl) return;
 
-    for (let i = 0; i < snowflakeCount; i++) {
-        const flake = document.createElement('div');
-        flake.classList.add('snowflake');
-        flake.style.left = Math.random() * 100 + '%';
-        flake.style.animationDuration = Math.random() * 3 + 5 + 's'; // Entre 5 et 8s
-        flake.style.opacity = Math.random() * 0.5 + 0.2;
-        flake.style.width = Math.random() * 3 + 2 + 'px';
-        flake.style.height = flake.style.width;
-        flake.style.animationDelay = Math.random() * 5 + 's';
-        container.appendChild(flake);
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const christmas = new Date(currentYear, 11, 25, 0, 0, 0); // 25 Décembre
+
+    // Si passé, vise l'année prochaine ou affiche "Joyeux Noël"
+    if (now > christmas) {
+        // Si on est le 25, Joyeux Noël
+        if (now.getDate() === 25 && now.getMonth() === 11) {
+            countdownEl.textContent = "🎄 Joyeux Noël ! 🎄";
+            return;
+        }
+        // Sinon année prochaine (optionnel, ou on cache)
+        christmas.setFullYear(currentYear + 1);
     }
+
+    const diff = christmas - now;
+    
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+    countdownEl.textContent = `Noël dans : ${days}j ${hours}h ${minutes}m ${seconds}s`;
 }
+
+setInterval(updateGlobalCountdown, 1000);
+updateGlobalCountdown(); // Lance direct
 
 // GESTION MUSIQUE & OVERLAY
 const bgMusic = document.getElementById('bg-music');
@@ -227,7 +245,6 @@ const musicBtn = document.getElementById('music-toggle');
 const welcomeOverlay = document.getElementById('welcome-overlay');
 const enterBtn = document.getElementById('enter-site-btn');
 
-// Fonction pour lancer la musique
 function playMusic() {
     bgMusic.volume = 0.3; 
     bgMusic.play().then(() => {
@@ -235,21 +252,14 @@ function playMusic() {
     }).catch(e => console.log("Audio error:", e));
 }
 
-// Clic sur le bouton "Entrer" de l'overlay
 enterBtn.addEventListener('click', () => {
-    // 1. Lancer la musique (interaction utilisateur directe = autorisé)
     playMusic();
-    
-    // 2. Cacher l'overlay avec une transition douce
     welcomeOverlay.classList.add('hidden');
-    
-    // 3. Supprimer l'overlay du DOM après la transition pour ne pas gêner
     setTimeout(() => {
         welcomeOverlay.style.display = 'none';
     }, 800);
 });
 
-// Fallback : Tente quand même de lancer si l'utilisateur a déjà interagi ou si le navigateur est permissif
 playMusic();
 
 musicBtn.addEventListener('click', (e) => {
@@ -263,13 +273,9 @@ musicBtn.addEventListener('click', (e) => {
     }
 });
 
-// Initialisation
-createSnowflakes();
-initCalendar();
-
 // TRAINEE MAGIQUE CURSEUR
 document.addEventListener('mousemove', function(e) {
-    if (Math.random() > 0.8) return; // Pas à chaque pixel pour performance
+    if (Math.random() > 0.8) return; 
 
     const particle = document.createElement('div');
     particle.classList.add('magic-particle');
@@ -282,3 +288,7 @@ document.addEventListener('mousemove', function(e) {
         particle.remove();
     }, 800);
 });
+
+// Initialisation
+createSnowflakes();
+initCalendar();
