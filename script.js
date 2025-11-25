@@ -25,6 +25,7 @@ let openedDoors = JSON.parse(localStorage.getItem('adventCalendarOpened')) || []
 if (!DEV_MODE) {
     const validOpenedDoors = openedDoors.filter(day => isDateAllowed(day));
     if (validOpenedDoors.length !== openedDoors.length) {
+        // On ne log plus pour éviter le spam, mais on pourrait
         openedDoors = validOpenedDoors;
         localStorage.setItem('adventCalendarOpened', JSON.stringify(openedDoors));
     }
@@ -53,7 +54,6 @@ function initCalendar() {
         `;
         door.innerHTML = content;
 
-        // Toujours ouvrir le modal, même si verrouillé (demande utilisateur)
         door.addEventListener('click', () => handleDoorClick(door, data));
 
         calendarContainer.appendChild(door);
@@ -61,11 +61,13 @@ function initCalendar() {
 }
 
 function isDateAllowed(day) {
+    if (window.ADMIN_OVERRIDE) return true; // ADMIN MODE
+
     if (DEV_MODE) return true;
     const now = new Date();
     const currentMonth = now.getMonth(); 
     const currentDay = now.getDate();
-    // Si on est en Décembre (11) ou Janvier prochain
+    
     if (currentMonth === 11) return currentDay >= day;
     if (currentMonth < 11 && now.getFullYear() > 2025) return true;
     return false;
@@ -73,7 +75,6 @@ function isDateAllowed(day) {
 
 function getWaitTimeParts(targetDay) {
     const now = new Date();
-    // Cible : Décembre de l'année en cours
     const targetDate = new Date(now.getFullYear(), 11, targetDay, 0, 0, 0);
     let diff = targetDate - now;
     
@@ -88,7 +89,6 @@ function getWaitTimeParts(targetDay) {
 }
 
 function handleDoorClick(doorElement, data) {
-    // Si c'est permis, on marque ouvert
     if (isDateAllowed(data.day)) {
         doorElement.classList.add('opened');
         doorElement.classList.remove('locked');
@@ -97,8 +97,51 @@ function handleDoorClick(doorElement, data) {
             localStorage.setItem('adventCalendarOpened', JSON.stringify(openedDoors));
         }
     }
-    // Dans tous les cas on ouvre le modal (qui gérera l'affichage Contenu vs Compte à rebours)
     openModal(data);
+}
+
+// GESTION TOAST AVEC COMPTE A REBOURS
+let toastTimeout;
+let countdownInterval;
+
+function showToast(message) {
+    const toast = document.getElementById('toast');
+    const toastMessage = document.getElementById('toast-message');
+    const toastCountdown = document.getElementById('toast-countdown');
+    const toastClose = document.getElementById('toast-close');
+    
+    if (toast && toastMessage) {
+        if (toastTimeout) clearTimeout(toastTimeout);
+        if (countdownInterval) clearInterval(countdownInterval);
+        
+        toastMessage.textContent = message;
+        toast.classList.remove('hidden');
+        toast.classList.add('visible');
+        
+        if (toastCountdown) {
+            let secondsLeft = 4;
+            toastCountdown.textContent = `Fermeture dans ${secondsLeft}s`;
+            
+            countdownInterval = setInterval(() => {
+                secondsLeft--;
+                if (secondsLeft > 0) {
+                    toastCountdown.textContent = `Fermeture dans ${secondsLeft}s`;
+                } else {
+                    clearInterval(countdownInterval);
+                    toastCountdown.textContent = "";
+                }
+            }, 1000);
+        }
+
+        const hideToast = () => {
+            toast.classList.remove('visible');
+            setTimeout(() => toast.classList.add('hidden'), 500);
+            if (countdownInterval) clearInterval(countdownInterval);
+        };
+
+        if (toastClose) toastClose.onclick = hideToast;
+        toastTimeout = setTimeout(hideToast, 4000);
+    }
 }
 
 function openModal(data) {
@@ -107,7 +150,6 @@ function openModal(data) {
     modalCaption.innerHTML = '';
 
     if (isDateAllowed(data.day)) {
-        // AFFICHAGE MEDIA
         if (data.type === 'image') {
             const img = document.createElement('img');
             img.src = data.src;
@@ -122,7 +164,6 @@ function openModal(data) {
         }
         modalCaption.textContent = data.caption;
     } else {
-        // AFFICHAGE COMPTE A REBOURS
         const wait = getWaitTimeParts(data.day);
         if (wait) {
             const msg = document.createElement('div');
@@ -172,12 +213,13 @@ function updateGlobalCountdown() {
 
     countdownEl.textContent = `Noël dans : ${days}j ${hours}h ${minutes}m`;
 }
-setInterval(updateGlobalCountdown, 60000); // Update minute par minute suffisant
+setInterval(updateGlobalCountdown, 60000);
 updateGlobalCountdown();
 
-// MUSIQUE & OVERLAY
+// MUSIQUE & OVERLAY & ADMIN
 const bgMusic = document.getElementById('bg-music');
 const musicBtn = document.getElementById('music-toggle');
+const adminBtn = document.getElementById('admin-toggle');
 const welcomeOverlay = document.getElementById('welcome-overlay');
 const enterBtn = document.getElementById('enter-site-btn');
 
@@ -197,7 +239,6 @@ if (enterBtn && welcomeOverlay) {
     });
 }
 
-// Fallback click body
 document.body.addEventListener('click', () => {
     if (bgMusic && bgMusic.paused) playMusic();
 }, { once: true });
@@ -211,6 +252,29 @@ if (musicBtn) {
         } else {
             bgMusic.pause();
             musicBtn.classList.add('paused');
+        }
+    });
+}
+
+// ADMIN LOGIC
+if (adminBtn) {
+    adminBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        
+        if (window.ADMIN_OVERRIDE) {
+            if(confirm("Désactiver le mode Admin ?")) {
+                localStorage.removeItem('adventCalendarOpened'); 
+                location.reload();
+            }
+        } else {
+            alert("✨ Mode Magique Activé ! Toutes les cases sont ouvertes.");
+            window.ADMIN_OVERRIDE = true;
+            adminBtn.classList.add('unlocked');
+            
+            const allDoors = document.querySelectorAll('.door');
+            allDoors.forEach(door => {
+                door.classList.remove('locked');
+            });
         }
     });
 }
@@ -247,5 +311,5 @@ function createSnowflakes() {
 document.addEventListener('DOMContentLoaded', () => {
     createSnowflakes();
     initCalendar();
-    playMusic(); // Try auto play on load
+    playMusic();
 });
