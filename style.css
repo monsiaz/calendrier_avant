@@ -561,15 +561,18 @@ h1 {
     }
 }
 
-/* LECTEUR AUDIO DISCRET */
-.audio-player {
+/* CONTRÔLES (AUDIO + ADMIN) */
+.controls-container {
     position: fixed;
     bottom: 20px;
     right: 20px;
-    z-index: 100;
+    z-index: 150;
+    display: flex;
+    gap: 15px; /* Espace entre les boutons */
+    flex-direction: row;
 }
 
-.music-btn {
+.control-btn {
     background: rgba(10, 47, 31, 0.6);
     backdrop-filter: blur(5px);
     border: 1px solid var(--gold-accent);
@@ -583,25 +586,30 @@ h1 {
     cursor: pointer;
     transition: all 0.3s ease;
     box-shadow: 0 0 15px rgba(0,0,0,0.3);
+    padding: 0; /* Reset padding */
 }
 
-.music-btn:hover {
+.control-btn:hover {
     transform: scale(1.1);
     background: rgba(212, 175, 55, 0.2);
     box-shadow: 0 0 20px var(--gold-accent);
 }
 
-.music-icon {
+.control-icon {
     font-size: 1.5rem;
+}
+
+/* Animation spécifique musique */
+#music-toggle .control-icon {
     animation: pulseMusic 2s infinite;
 }
 
-.music-btn.paused .music-icon {
+#music-toggle.paused .control-icon {
     animation: none;
     opacity: 0.6;
 }
 
-.music-btn.paused::after {
+#music-toggle.paused::after {
     content: '';
     position: absolute;
     width: 60%;
@@ -610,10 +618,43 @@ h1 {
     transform: rotate(45deg);
 }
 
+/* Bouton Admin spécifique */
+#admin-toggle {
+    opacity: 0.5; /* Plus discret par défaut */
+}
+#admin-toggle:hover {
+    opacity: 1;
+}
+#admin-toggle.unlocked {
+    background: var(--gold-accent);
+    color: var(--deep-green);
+    opacity: 1;
+    box-shadow: 0 0 20px var(--gold-accent);
+}
+
 @keyframes pulseMusic {
     0% { transform: scale(1); }
     50% { transform: scale(1.2); }
     100% { transform: scale(1); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    /* ... */
+    .controls-container {
+        bottom: 20px;
+        right: 20px;
+        gap: 10px;
+    }
+    .control-btn {
+        width: 55px; /* Zone confort mobile */
+        height: 55px;
+        background: rgba(10, 47, 31, 0.85);
+    }
+    .control-icon {
+        font-size: 1.5rem;
+    }
+    /* ... */
 }
 
 /* OVERLAY DE BIENVENUE (HACK AUDIO) */

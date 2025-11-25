@@ -89,15 +89,18 @@
         <div id="toast-countdown" class="toast-countdown"></div>
     </div>
 
-    <!-- Lecteur Audio Discret -->
-    <div class="audio-player">
-        <button id="music-toggle" class="music-btn paused" aria-label="Musique">
-            <span class="music-icon">♫</span>
+    <!-- Contrôles (Musique + Admin) -->
+    <div class="controls-container">
+        <button id="admin-toggle" class="control-btn" aria-label="Admin Unlock">
+            <span class="control-icon">🔓</span>
         </button>
-        <audio id="bg-music" loop autoplay>
-            <source src="Medias/web_ready/bg-music.mp3" type="audio/mpeg">
-        </audio>
+        <button id="music-toggle" class="control-btn paused" aria-label="Musique">
+            <span class="control-icon">♫</span>
+        </button>
     </div>
+    <audio id="bg-music" loop autoplay>
+        <source src="Medias/web_ready/bg-music.mp3" type="audio/mpeg">
+    </audio>
 
     <script src="calendar_data.js"></script>
     <script src="script.js"></script>
