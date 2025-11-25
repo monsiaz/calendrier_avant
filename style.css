@@ -82,7 +82,7 @@ a, button, .door, .close-btn, .music-btn, .enter-btn {
     max-width: 1100px;
     margin: 0 auto;
     position: relative;
-    z-index: 2;
+    z-index: 50; /* Augmenté pour passer au-dessus des décorations */
 }
 
 header {
