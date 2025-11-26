@@ -1,3 +1,4 @@
+/* Données générées automatiquement - NE PAS MODIFIER MANUELLEMENT SI POSSIBLE */
 const GENERATED_CALENDAR_DATA = [
     {
         "day": 1,
@@ -146,7 +147,7 @@ const GENERATED_CALENDAR_DATA = [
     {
         "day": 25,
         "type": "image",
-        "src": "Medias/web_ready/5ca1f6d0-230e-41d3-b9fc-cc8faa77a8bb.jpg",
-        "caption": "Souvenir du jour 25"
+        "src": "Medias/web_ready/1431.jpg",
+        "caption": "Souvenir Spécial du 25 Décembre"
     }
 ];
