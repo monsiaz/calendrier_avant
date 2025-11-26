@@ -641,25 +641,6 @@ h1 {
     100% { transform: scale(1); }
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-    /* ... */
-    .controls-container {
-        bottom: 20px;
-        right: 20px;
-        gap: 10px;
-    }
-    .control-btn {
-        width: 55px; /* Zone confort mobile */
-        height: 55px;
-        background: rgba(10, 47, 31, 0.85);
-    }
-    .control-icon {
-        font-size: 1.5rem;
-    }
-    /* ... */
-}
-
 /* OVERLAY DE BIENVENUE (HACK AUDIO) */
 #welcome-overlay {
     position: fixed;
@@ -724,6 +705,21 @@ h1 {
     50% { transform: translateY(-10px); }
 }
 
+/* CREDITS FOOTER */
+.footer-credits {
+    position: fixed;
+    bottom: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    color: rgba(255, 248, 231, 0.5); /* Très discret */
+    z-index: 160; /* Au-dessus des stickers mais en dessous des modals */
+    pointer-events: none;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+    white-space: nowrap;
+}
+
 /* Ajustements Responsive pour les Stickers */
 @media (max-width: 1200px) {
     .deco-sticker { max-width: 120px; }
@@ -770,17 +766,17 @@ h1 {
     .santa-sleigh { width: 120px; } /* Plus petit sur mobile */
     
     /* Lecteur Audio Mobile : plus gros pour les doigts, et bien placé */
-    .audio-player {
+    .controls-container {
         bottom: 20px;
         right: 20px;
         z-index: 150; /* Au dessus de tout */
     }
-    .music-btn {
+    .control-btn {
         width: 55px; /* Zone de touche confort */
         height: 55px;
         background: rgba(10, 47, 31, 0.85); /* Plus opaque sur mobile */
     }
-    .music-icon {
+    .control-icon {
         font-size: 1.5rem;
     }
     
@@ -793,6 +789,11 @@ h1 {
     .close-btn {
         width: 45px; height: 45px; /* Plus facile à fermer */
         top: 10px; right: 10px;
+    }
+
+    .footer-credits {
+        bottom: 5px;
+        font-size: 0.7rem;
     }
 }
 
