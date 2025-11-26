@@ -1,4 +1,86 @@
-    <!-- ... (contenu précédent) ... -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendrier de l'Avent</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@400;700&family=Quicksand:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Overlay de Bienvenue (pour débloquer l'audio) -->
+    <div id="welcome-overlay">
+        <div class="welcome-content">
+            <h1 class="welcome-title">La Magie de Noël</h1>
+            <p style="font-size: 1.5rem; margin-bottom: 30px;">Montez le son et profitez de l'expérience...</p>
+            <button id="enter-site-btn" class="enter-btn">Entrer</button>
+        </div>
+    </div>
+
+    <!-- Arrière-plan animé subtil -->
+    <div class="bg-overlay"></div>
+    
+    <!-- Effet de neige raffiné -->
+    <div class="snow-container" aria-hidden="true"></div>
+
+    <!-- Traineau du Père Noël (Animation) -->
+    <div class="santa-sleigh-container">
+        <img src="https://cdn-icons-png.flaticon.com/512/744/744546.png" alt="Traineau Père Noël" class="santa-sleigh">
+    </div>
+
+    <!-- Décorations de bordure (Cadre féérique) -->
+    <div class="border-decorations" aria-hidden="true">
+        <img src="Sapin/Sujet 7.png" alt="" class="deco-sticker top-left">
+        <img src="Sapin/Sujet 8.png" alt="" class="deco-sticker top-right">
+        
+        <img src="Sapin/Sujet 5.png" alt="" class="deco-sticker side-left">
+        <img src="Sapin/Sujet 6.png" alt="" class="deco-sticker side-right">
+        
+        <img src="Sapin/Sujet 2.png" alt="" class="deco-sticker bottom-left">
+        <img src="Sapin/Sujet.png" alt="" class="deco-sticker bottom-center">
+        <img src="Sapin/Sujet 3.png" alt="" class="deco-sticker bottom-right">
+    </div>
+
+    <div class="main-container">
+        <header>
+            <div class="header-ornament">✧</div>
+            <h1>En Attendant Noël</h1>
+            <p class="subtitle">Chaque jour, un souvenir précieux à découvrir</p>
+            <div id="global-countdown" class="global-countdown"></div>
+            <div class="header-ornament">✧</div>
+        </header>
+        
+        <main class="calendar-grid" id="calendar">
+            <!-- Les cases seront générées par JS -->
+        </main>
+    </div>
+
+    <!-- Modal Élégant -->
+    <div id="media-modal" class="modal hidden">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content">
+            <button class="close-btn" aria-label="Fermer">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+            
+            <div class="modal-header">
+                <span class="ornament-left">❦</span>
+                <h2 id="modal-date"></h2>
+                <span class="ornament-right">❦</span>
+            </div>
+            
+            <div id="modal-media-container">
+                <!-- Média injecté ici -->
+            </div>
+            
+            <div class="caption-container">
+                <p id="modal-caption"></p>
+            </div>
+        </div>
+    </div>
+
     <!-- Notification Toast -->
     <div id="toast" class="toast hidden">
         <button id="toast-close" class="toast-close" aria-label="Fermer">&times;</button>
